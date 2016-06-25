@@ -2,6 +2,5 @@
 Non-Interactive Weather Display (NIWD)
 
 A Pyside based full screen weather widget which displays current conditions in two locations, 
-as well as hourly forcast temperature and chance of precipitation for both locations. NIWD also
-also features a historical past hour radar and an at-a-glance high temperature indicator (at this
-time it uses frog images). 
+as well as hourly forcast temperature and chance of precipitation for both locations. NIWD
+also features a historical past hour radar and an at-a-glance high temperature indicator (at this time it uses frog images). 
