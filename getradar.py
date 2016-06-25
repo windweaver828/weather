@@ -41,9 +41,12 @@ def get_radar(url, out_folder):
         try:
             foreground = Image.open(cStringIO.StringIO(response.content))
         except Exception as e:
-            print(e)
-            print "skipping " + imageurl
+            print("Error occurred: {e}".format(e=e))
             continue
+        except IOError:
+            # Image url not found
+            continue
+
         background = Image.open(os.path.expanduser('~/Projects/weather/basemap.jpg'))
         foreground = foreground.convert('RGBA')
         background.paste(foreground, (0, 0), foreground)
@@ -63,7 +66,7 @@ def run():
     for f in [IMAGEPATH + f for f in os.listdir(IMAGEPATH) if f.endswith(".gif")]:
         os.remove(f)
     get_radar(RADARSITE, IMAGEPATH)
-    command = "convert -delay 20 -loop 0 {}*.gif {}".format(IMAGEPATH, GIFPATH)
+    command = "convert -delay 15 -loop 0 {}*.gif {}".format(IMAGEPATH, GIFPATH)
     os.system(command)
 
 if __name__ == "__main__":
