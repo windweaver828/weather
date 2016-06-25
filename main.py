@@ -29,11 +29,10 @@ import json
 import math
 import urllib2
 import collections
-import datetime
-import math
 import getradar
 from colour import Color
 from keith import Process
+
 
 class Weather(QtGui.QGraphicsView, QtCore.QObject):
     def __init__(self, parent=None):
@@ -42,13 +41,13 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         font = QtGui.QFont()
-        font.setPointSize(24) # sets the font size for window
+        font.setPointSize(24)  # sets the font size for window
         self.layout = QtGui.QVBoxLayout()   # main window
-        self.Hline = QtGui.QFrame() ## used to draw a horizontal separating line
+        self.Hline = QtGui.QFrame()  # used to draw a horizontal separating line
         self.Hline.setFrameStyle(QtGui.QFrame.HLine)
         self.Hline.setMaximumSize(QtCore.QSize(99999999, 3))
         self.Hline.setStyleSheet("margin:1px; border:1px solid rgb(0, 255,  127);")
-        self.spacer = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.layout2 = QtGui.QHBoxLayout()  # horizontal across top
         self.header = QtGui.QLabel()
         getradar.run()
@@ -124,7 +123,7 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.datelabel.setStyleSheet("font-weight:bold; font-family:Purisa; color:springgreen")
         self.datelabel.setAlignment(QtCore.Qt.AlignCenter)
         self.datelabel.setFont(font)
-        self.datelabel.setText('Today, '+ time.strftime("%B %d,%Y"))
+        self.datelabel.setText('Today, ' + time.strftime("%B %d,%Y"))
         self.layoutdate.addWidget(self.datelabel)
 
         self.layout3.addLayout(self.layout4)     # adds vertical layouts to
@@ -136,9 +135,9 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.layout9 = QtGui.QVBoxLayout()    # Hourly forecast layouts
         self.layoutImages = QtGui.QVBoxLayout()
 
-        self.imagelabel = QtGui.QLabel()            ## Image labels to visibly show the temps
-        self.image = self.addImage('blank.jpg')     ## and an animated gif for the radar
-        self.spacerline = QtGui.QSpacerItem(80,30)
+        self.imagelabel = QtGui.QLabel()            # Image labels to visibly show the temps
+        self.image = self.addImage('blank.jpg')     # and an animated gif for the radar
+        self.spacerline = QtGui.QSpacerItem(80, 30)
         self.radarlabel = QtGui.QLabel()
         self.radar = self.addRadar('radar.gif')
 
@@ -146,25 +145,25 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.layoutImages.addItem(self.spacerline)
         self.layoutImages.addWidget(self.radarlabel)
 
-        self.layout25 = QtGui.QHBoxLayout() # horizontal containing two verticals
+        self.layout25 = QtGui.QHBoxLayout()  # horizontal containing two verticals
         # that hold the hourly divided for two cities
         self.layout25.addLayout(self.layout8)
         self.layout25.addLayout(self.layoutImages)
         self.layout25.addLayout(self.layout9)
 
-        self.layout.addLayout(self.layout2) # adds header layout
-        self.layout.addLayout(self.layout3) # adds current weather layout
+        self.layout.addLayout(self.layout2)  # adds header layout
+        self.layout.addLayout(self.layout3)  # adds current weather layout
         self.layout.addWidget(self.Hline)
         self.layout.addLayout(self.layoutdate)
-        self.layout.addLayout(self.layout25)# adds forecast weather layout
+        self.layout.addLayout(self.layout25)  # adds forecast weather layout
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.onTimer)
         self.screen = QtGui.QDesktopWidget().screenGeometry()
         self.label = QtGui.QLabel()
 
-        ## list of labels to replace for label in self.labels so that I can
-        ## assign text to each label individually
+        # list of labels to replace for label in self.labels so that I can
+        # assign text to each label individually
         self.hourlabel1 = QtGui.QLabel()
         self.hourlabel2 = QtGui.QLabel()
         self.hourlabel3 = QtGui.QLabel()
@@ -261,9 +260,8 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.setLayout(self.layout)
         self.setGeometry(0, 0, (self.screen.width()), (self.screen.height()))
         self.weather_dict = {}
-##        self.timer.start(5000)
+#        self.timer.start(5000)
         self.onTimer()
-        self.show()
 
     def addRadar(self, fname):
         self.movie = QtGui.QMovie(fname, QtCore.QByteArray(), self)
@@ -275,7 +273,7 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
 
     def addImage(self, image):
         self.image = os.getcwd() + os.sep + 'WeatherIcons' + os.sep + image
-        self.pixmap = QtGui.QPixmap(self.image).scaled(400,175)
+        self.pixmap = QtGui.QPixmap(self.image).scaled(400, 175)
         self.imagelabel.setPixmap(self.pixmap)
         self.layoutImages.addWidget(self.imagelabel)
 
@@ -304,24 +302,24 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
             self.space2 = '\t\t\t'
             self.space3 = '\t\t\t'
 
-            ## check if hour ==  23 if so populate a dividerdatelabel(has to be made first) to separate today from tommorow
+            # check if hour ==  23 if so populate a dividerdatelabel(has to be made first) to separate today from tommorow
             if self.current_weather['location'] == 'Lucedale':
                 self.timelabel.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
                 self.timelabel.setText(time.strftime("%I:%M %p"))
                 self.summary.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
                 self.summary.setText(self.current_weather['Conditions'])
                 self.temperature.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
-                self.temperature.setText('Temp: '+ str(self.current_weather['Temperature'])+ u"\u00B0"+' F')
+                self.temperature.setText('Temp: ' + str(self.current_weather['Temperature']) + u"\u00B0" + ' F')
                 self.feelslike.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
-                self.feelslike.setText('Feels like: '+self.current_weather['FeelsLike']+ u"\u00B0"+' F')
+                self.feelslike.setText('Feels like: ' + self.current_weather['FeelsLike'] + u"\u00B0" + ' F')
                 self.dewpoint.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
-                self.dewpoint.setText('Dew Point: '+self.current_weather['DewPoint']+ u"\u00B0"+' F')
+                self.dewpoint.setText('Dew Point: ' + self.current_weather['DewPoint'] + u"\u00B0" + ' F')
                 self.humidity.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
-                self.humidity.setText('Humidity: '+self.current_weather['Humidity'])
+                self.humidity.setText('Humidity: ' + self.current_weather['Humidity'])
                 self.wind.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
-                self.wind.setText('Wind: '+self.current_weather['Wind'])
+                self.wind.setText('Wind: ' + self.current_weather['Wind'])
                 self.chanceofrain.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
-                self.chanceofrain.setText(self.current_weather['ChanceofRain']+ ' Chance of Rain' )
+                self.chanceofrain.setText(self.current_weather['ChanceofRain'] + ' Chance of Rain')
                 self.hightemp.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
                 if self.hightemp > 80 and self.hightemp < 90:
                     self.image = self.addImage('bikinifrog.jpg')
@@ -335,42 +333,42 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
                     self.image = self.addImage('chillyfrog')
                 elif self.hightemp < 50:
                     self.image = self.addImage('frozenrfog')
-                self.hightemp.setText("Today's High: "+self.current_weather['HighTemp']+ u"\u00B0"+' F')
+                self.hightemp.setText("Today's High: " + self.current_weather['HighTemp'] + u"\u00B0" + ' F')
                 self.lowtemp.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
-                self.lowtemp.setText("Today's Low: "+self.current_weather['LowTemp']+ u"\u00B0"+' F')
+                self.lowtemp.setText("Today's Low: " + self.current_weather['LowTemp'] + u"\u00B0" + ' F')
                 self.hourlabel1.setStyleSheet("font-weight:bold; font-family:Purisa; color:darkorchid")
                 if len(self.hour1['summary']) < 8:
-                    self.hourlabel1.setText(str(self.hour1['time'])+ self.space1 + self.hour1['summary']+ self.space2 + str(self.hour1['temperature'])+u"\u00B0"+' F')
+                    self.hourlabel1.setText(str(self.hour1['time']) + self.space1 + self.hour1['summary'] + self.space2 + str(self.hour1['temperature']) + u"\u00B0" + ' F')
                 else:
-                    self.hourlabel1.setText(str(self.hour1['time'])+ self.space1 + self.hour1['summary']+ self.space1 + str(self.hour1['temperature'])+u"\u00B0"+' F')
-                num = float(self.hour1['rainchance']/2)
+                    self.hourlabel1.setText(str(self.hour1['time']) + self.space1 + self.hour1['summary'] + self.space1 + str(self.hour1['temperature']) + u"\u00B0" + ' F')
+                num = float(self.hour1['rainchance'] / 2)
                 color = colors[int(math.ceil(num))]
                 self.hourlabel2.setStyleSheet("font-weight:bold; font-family:Purisa; color:{}".format(color))
                 self.hourlabel2.setAlignment(QtCore.Qt.AlignLeft)
-                self.hourlabel2.setText('\t'+str(self.hour1['rainchance'])+"% Chance of Precipitation")
+                self.hourlabel2.setText('\t' + str(self.hour1['rainchance']) + "% Chance of Precipitation")
                 self.hourlabel3.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightgoldenrodyellow")
                 if len(self.hour2['summary']) < 8:
-                    self.hourlabel3.setText(str(self.hour2['time'])+ self.space1 + self.hour2['summary']+ self.space2 + str(self.hour2['temperature'])+u"\u00B0"+' F')
+                    self.hourlabel3.setText(str(self.hour2['time']) + self.space1 + self.hour2['summary'] + self.space2 + str(self.hour2['temperature'])+u"\u00B0"+' F')
                 else:
-                    self.hourlabel3.setText(str(self.hour2['time'])+ self.space1 + self.hour2['summary']+ self.space1 + str(self.hour2['temperature'])+u"\u00B0"+' F')
-                num = float(self.hour2['rainchance']/2)
+                    self.hourlabel3.setText(str(self.hour2['time']) + self.space1 + self.hour2['summary'] + self.space1 + str(self.hour2['temperature'])+u"\u00B0"+' F')
+                num = float(self.hour2['rainchance'] / 2)
                 color = colors[int(math.ceil(num))]
                 self.hourlabel4.setStyleSheet("font-weight:bold; font-family:Purisa; color:{}".format(color))
                 self.hourlabel4.setAlignment(QtCore.Qt.AlignLeft)
-                self.hourlabel4.setText('\t'+str(self.hour2['rainchance'])+" % Chance of Precipitation")
+                self.hourlabel4.setText('\t' + str(self.hour2['rainchance']) + " % Chance of Precipitation")
                 self.hourlabel5.setStyleSheet("font-weight:bold; font-family:Purisa; color:darkorchid")
                 if len(self.hour3['summary']) < 8:
-                    self.hourlabel5.setText(str(self.hour3['time'])+ self.space1 + self.hour3['summary']+ self.space2 + str(self.hour3['temperature'])+u"\u00B0"+' F')
+                    self.hourlabel5.setText(str(self.hour3['time']) + self.space1 + self.hour3['summary'] + self.space2 + str(self.hour3['temperature'])+u"\u00B0"+' F')
                 else:
-                    self.hourlabel5.setText(str(self.hour3['time'])+ self.space1 + self.hour3['summary']+ self.space1 + str(self.hour3['temperature'])+u"\u00B0"+' F')
-                num = float(self.hour3['rainchance']/2)
+                    self.hourlabel5.setText(str(self.hour3['time']) + self.space1 + self.hour3['summary'] + self.space1 + str(self.hour3['temperature'])+u"\u00B0"+' F')
+                num = float(self.hour3['rainchance'] / 2)
                 color = colors[int(math.ceil(num))]
                 self.hourlabel6.setStyleSheet("font-weight:bold; font-family:Purisa; color:{}".format(color))
                 self.hourlabel6.setAlignment(QtCore.Qt.AlignLeft)
-                self.hourlabel6.setText('\t'+str(self.hour3['rainchance'])+" % Chance of Precipitation")
+                self.hourlabel6.setText('\t' + str(self.hour3['rainchance']) + " % Chance of Precipitation")
                 self.hourlabel7.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightgoldenrodyellow")
                 if len(self.hour4['summary']) < 8:
-                    self.hourlabel7.setText(str(self.hour4['time'])+ self.space1 + self.hour4['summary']+ self.space2 + str(self.hour4['temperature'])+u"\u00B0"+' F')
+                    self.hourlabel7.setText(str(self.hour4['time']) + self.space1 + self.hour4['summary'] + self.space2 + str(self.hour4['temperature'])+u"\u00B0"+' F')
                 else:
                     self.hourlabel7.setText(str(self.hour4['time'])+ self.space1 + self.hour4['summary']+ self.space1 + str(self.hour4['temperature'])+u"\u00B0"+' F')
                 num = float(self.hour4['rainchance']/2)
@@ -616,7 +614,6 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         hourly = parsed["hourly"]["data"]
 
         for x in hourly[:12]:
-            nowtime = time.localtime(1465905600).tm_hour
             T = x["temperature"]
             V = x["windSpeed"]
             windchill = math.ceil(35.74 + (0.6215*T) - (35.75*(V**0.16)) + (0.4275*T*(V**0.16)))
@@ -634,16 +631,20 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
             weather_list.append(hour_dict)
         return weather_list
 
-def run( ):
+
+def run():
     app = QtGui.QApplication(sys.argv)
     weather = Weather()
+    weather.show()
+    weather.windowHandle().setScreen(app.screens()[1])
+    weather.showFullScreen()
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
     Process.chgProcessName('weathergui')
     APIKEY = "5345c8ecbd9441de62c7b048f21c963d"
-    URL="https://api.forecast.io/forecast/"
+    URL = "https://api.forecast.io/forecast/"
     LOCATIONS = {'Lucedale': (30.9252, -88.5900),
                  'Long Beach': (30.3505, -89.1528)}
-    FILE_PATH = os.getcwd()+os.sep+"WEATHER.cache"
+    FILE_PATH = os.getcwd() + os.sep + "WEATHER.cache"
     run()
