@@ -40,11 +40,11 @@ def get_radar(url, out_folder):
         response = requests.get(imageurl)
         try:
             foreground = Image.open(cStringIO.StringIO(response.content))
-        except Exception as e:
-            print("Error occurred: {e}".format(e=e))
-            continue
         except IOError:
             # Image url not found
+            continue
+        except Exception as e:
+            print("Error occurred: {e}".format(e=e))
             continue
 
         background = Image.open(os.path.expanduser('~/Projects/weather/basemap.jpg'))
