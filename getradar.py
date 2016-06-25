@@ -45,8 +45,17 @@ def get_radar(url, out_folder):
 
 if __name__ == "__main__":
     import os
+    import apt
+
+    if not apt.Cache()['imagemagick'].is_installed:
+        import sys
+        print("Do sudo apt-get install imagemagick to use this script.")
+        sys.exit(1)
     RADARSITE = 'http://radar.weather.gov/ridge/RadarImg/N1P/DGX/'
     IMAGEPATH = os.path.expanduser('~/Projects/weather/images/')
+    GIFPATH = os.path.expanduser("~/Projects/weather/radar.gif")
     for f in [IMAGEPATH + f for f in os.listdir(IMAGEPATH) if f.endswith(".gif")]:
         os.remove(f)
     get_radar(RADARSITE, IMAGEPATH)
+    command = "convert -delay 20 -loop 0 {}*.gif {}".format(IMAGEPATH, GIFPATH)
+    os.system(command)
