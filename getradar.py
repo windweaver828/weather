@@ -1,10 +1,17 @@
 #!/usr/bin/env python2
+#
+#  Non-Interactive Weather Display (NIWD)
+#  Copyright (C) 2016  Keith Brandenburg
+#  Copyright (C) 2016  James Upton
+#
+#  This file is part of NIWD
 
 from bs4 import BeautifulSoup
 from urllib2 import urlopen, Request, HTTPError, URLError
 import requests
 import cStringIO
 import Image
+import os
 
 
 def make_soup(url):
@@ -36,22 +43,21 @@ def get_radar(url, out_folder):
         except Exception as e:
             print(e)
             print "skipping " + imageurl
-            return
-        background = Image.open("basemap.jpg")
+            continue
+        background = Image.open(os.path.expanduser('~/Projects/weather/basemap.jpg'))
         foreground = foreground.convert('RGBA')
         background.paste(foreground, (0, 0), foreground)
-        # background = background.convert('P')
         background.save(out_folder + filename)
 
-if __name__ == "__main__":
-    import os
+
+def run():
     import apt
 
     if not apt.Cache()['imagemagick'].is_installed:
         import sys
         print("Do sudo apt-get install imagemagick to use this script.")
         sys.exit(1)
-    RADARSITE = 'http://radar.weather.gov/ridge/RadarImg/N1P/DGX/'
+    RADARSITE = 'http://radar.weather.gov/ridge/RadarImg/N1P/MOB/'
     IMAGEPATH = os.path.expanduser('~/Projects/weather/images/')
     GIFPATH = os.path.expanduser("~/Projects/weather/radar.gif")
     for f in [IMAGEPATH + f for f in os.listdir(IMAGEPATH) if f.endswith(".gif")]:
@@ -59,3 +65,6 @@ if __name__ == "__main__":
     get_radar(RADARSITE, IMAGEPATH)
     command = "convert -delay 20 -loop 0 {}*.gif {}".format(IMAGEPATH, GIFPATH)
     os.system(command)
+
+if __name__ == "__main__":
+    run()
