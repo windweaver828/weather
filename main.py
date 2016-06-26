@@ -273,7 +273,7 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.movie.start()
 
     def addImage(self, image):
-        self.image = os.getcwd() + os.sep + 'WeatherIcons' + os.sep + image
+        self.image = 'WeatherIcons' + os.sep + image
         self.pixmap = QtGui.QPixmap(self.image).scaled(400, 175, QtCore.Qt.KeepAspectRatio)
         self.imagelabel.setPixmap(self.pixmap)
         self.imagelabel.setAlignment(QtCore.Qt.AlignCenter)
@@ -282,8 +282,8 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
     def onTimer(self):
         QtGui.QApplication.processEvents()
         blue1 = Color('#6a9dcf')
-        blue2 = ('#1D2951')
-        colors = list(blue1.range_to(Color(blue2), 50))
+        blue2 = Color('#1D2951')
+        colors = list(blue1.range_to(blue2, 50))
         self.skipped = False
         for location, x in LOCATIONS.items():
             lat, lng = x
@@ -334,7 +334,7 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
                 elif self.hightemp < 60 and self.hightemp > 50:
                     self.image = self.addImage('chillyfrog')
                 elif self.hightemp < 50:
-                    self.image = self.addImage('frozenrfog')
+                    self.image = self.addImage('frozenfrog')
                 self.hightemp.setText("Today's High: " + self.current_weather['HighTemp'] + u"\u00B0" + ' F')
                 self.lowtemp.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
                 self.lowtemp.setText("Today's Low: " + self.current_weather['LowTemp'] + u"\u00B0" + ' F')
