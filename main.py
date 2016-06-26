@@ -597,8 +597,6 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         req = urllib2.Request(URL + APIKEY + "/" + ("%f,%f" % (lat, lng)))
         response = urllib2.urlopen(req)
         parsed = json.loads(response.read())
-        with open(FILE_PATH, "w") as f:
-            f.write(json.dumps(parsed, indent=4, sort_keys=True))
         now_dict = collections.OrderedDict()
         current = parsed["currently"]
         daily = parsed["daily"]["data"][0]
@@ -648,5 +646,4 @@ if __name__ == '__main__':
     URL = "https://api.forecast.io/forecast/"
     LOCATIONS = {'Lucedale': (30.9252, -88.5900),
                  'Long Beach': (30.3505, -89.1528)}
-    FILE_PATH = os.getcwd() + os.sep + "WEATHER.cache"
     run()
