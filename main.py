@@ -39,13 +39,11 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         super(Weather, self).__init__(parent)
         self.setStyleSheet("background: transparent; border: none; font-weight:bold; font-family:URW Chancery L ")
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        self.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         font = QtGui.QFont()
-        font.setPointSize(24)  # sets the font size for window
         self.layout = QtGui.QVBoxLayout()   # main window
         self.Hline = QtGui.QFrame()  # used to draw a horizontal separating line
         self.Hline.setFrameStyle(QtGui.QFrame.HLine)
-        self.Hline.setMaximumSize(QtCore.QSize(99999999, 3))
+        self.Hline.setMaximumSize(QtCore.QSize(16777215, 3))
         self.Hline.setStyleSheet("margin:1px; border:1px solid rgb(0, 255,  127);")
         self.layout2 = QtGui.QHBoxLayout()  # horizontal across top
         self.header = QtGui.QLabel()
@@ -134,7 +132,7 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.layoutImages = QtGui.QVBoxLayout()
 
         self.imagelabel = QtGui.QLabel()            # Image labels to visibly show the temps
-        self.image = self.addImage('blank.jpg')     # and an animated gif for the radar
+        self.image = self.addImage('blank')     # and an animated gif for the radar
         self.spacerline = QtGui.QSpacerItem(80, 30)
         self.radarlabel = QtGui.QLabel()
         self.radar = self.addRadar('radar.gif')
@@ -254,10 +252,16 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.layout9.addWidget(self.hourlabel21LB)
         self.layout9.addWidget(self.hourlabel22LB)
 
-        self.layout.addLayout(self.layout2)
         self.header.setFont(font)
         self.header2.setFont(font)
         self.setLayout(self.layout)
+        # setgeometry size portion doesn't do anything...
+        # this program may not fit on a smaller screen
+        # or resolution, it doesn't fit width wise on
+        # mine and there's nothing I can do to shrink it
+        # changing values here does nothing for me nor does
+        # removing it altogether except that the position is 
+        # off at that point
         self.setGeometry(0, 0, (self.screen.width()), (self.screen.height()))
         self.weather_dict = {}
 #        self.timer.start(5000)
@@ -324,7 +328,7 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
                 self.chanceofrain.setText(self.current_weather['ChanceofRain'] + ' Chance of Rain')
                 self.hightemp.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
                 if self.hightemp > 80 and self.hightemp < 90:
-                    self.image = self.addImage('bikinifrog.jpg')
+                    self.image = self.addImage('bikinifrog')
                 elif self.hightemp > 90:
                     self.image = self.addImage('bonefrog')
                 elif self.hightemp < 80 and self.hightemp > 70:
