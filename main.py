@@ -39,6 +39,22 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         super(Weather, self).__init__(parent)
         self.setStyleSheet("background: transparent; border: none; font-weight:bold; font-family:URW Chancery L ")
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+
+        # This setion allows you to define which display and resize it although
+        # resizing is limited to do hard coded sizes for imnages and text layout
+        # guess we will have to do some funky math and set the size of images
+        # and text based on screen resolution...............
+        self.screens = QtGui.QDesktopWidget()
+        print(self.screens.screenCount())
+        print(self.screens.availableGeometry())
+        self.screen1 = QtGui.QDesktopWidget().screenGeometry(0)
+        try:
+            self.screen2 = QtGui.QDesktopWidget().screenGeometry(1)
+        except:
+            pass
+        self.setGeometry(0, 0, (self.screen1.width()), (self.screen1.height()))
+        self.move(self.screen1.left(), self.screen1.top())
+
         font = QtGui.QFont()
         self.layout = QtGui.QVBoxLayout()   # main window
         self.Hline = QtGui.QFrame()  # used to draw a horizontal separating line
@@ -52,13 +68,13 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         # The next line set the color font and size of text for each label can be called
         # on entire window or individual widgets ie.. labels
         self.header.setStyleSheet("font-weight:bold; font-family:Purisa; color:springgreen")
-        font.setPointSize(24)  # sets the font size for label
+        font.setPointSize(16)  # sets the font size for label
         self.header.setText("Current Weather Conditions in Lucedale, MS")
         self.layout2.addWidget(self.header)
         self.header2 = QtGui.QLabel()
         self.header2 .setStyleSheet("font-weight:bold; font-family:Purisa; color:springgreen")
         self.header2.setText("Current Weather Conditions in Long Beach, MS")
-        font.setPointSize(24)
+        font.setPointSize(16)
         self.layout2.addWidget(self.header2)
 
         self.layout3 = QtGui.QHBoxLayout()  # horizontal for curr weather
@@ -128,12 +144,11 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
 
         self.layout8 = QtGui.QVBoxLayout()    # Main layout for hourly weather
         self.layout9 = QtGui.QVBoxLayout()    # Hourly forecast layouts
-        
         self.layoutImages = QtGui.QVBoxLayout()
 
         self.imagelabel = QtGui.QLabel()            # Image labels to visibly show the temps
-        self.image = self.addImage('blank')     # and an animated gif for the radar
-        self.spacerline = QtGui.QSpacerItem(80, 30)
+        self.image = self.addImage('blank.jpg')     # and an animated gif for the radar
+        self.spacerline = QtGui.QSpacerItem(50, 30)
         self.radarlabel = QtGui.QLabel()
         self.radar = self.addRadar('radar.gif')
 
@@ -143,8 +158,8 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.layoutImages.addWidget(self.radarlabel)
 
         self.layout25 = QtGui.QHBoxLayout()  # horizontal containing two verticals
-        # that hold the hourly divided for two cities
-        self.layout8.setAlignment(QtCore.Qt.AlignJustify)
+                                                # that hold the hourly divided for two cities
+        self.layout8.setAlignment(QtCore.Qt.AlignJustify)   # makes the display pretty hehe
         self.layout9.setAlignment(QtCore.Qt.AlignJustify)
         self.layout25.addLayout(self.layout8)
         self.layout25.addLayout(self.layoutImages)
@@ -157,7 +172,6 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.onTimer)
-        self.screen = QtGui.QDesktopWidget().screenGeometry()
         self.label = QtGui.QLabel()
 
         # list of labels to replace for label in self.labels so that I can
@@ -255,19 +269,136 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.header.setFont(font)
         self.header2.setFont(font)
         self.setLayout(self.layout)
-        # setgeometry size portion doesn't do anything...
-        # this program may not fit on a smaller screen
-        # or resolution, it doesn't fit width wise on
-        # mine and there's nothing I can do to shrink it
-        # changing values here does nothing for me nor does
-        # removing it altogether except that the position is 
-        # off at that point
-        self.setGeometry(0, 0, (self.screen.width()), (self.screen.height()))
         self.weather_dict = {}
-#        self.timer.start(5000)
-        self.onTimer()
+        self.state = 1
+        self.timer.start(5000)
+        self.addWeather()
+
+# THIS SHIT DONT WORK!! Yeah it removes it but never refreshes the screeeeeennnnn!!!
+# Commenting it all out leaving a pass and forgetting about it for now...
+# Research shows having two layouts and swapping back and forth might be possible but still
+# Shit sucks ass!!!!!!!!!!!
+
+    def onTimer(self):
+        print('timer running')
+        #        # use this timer to show and hide individual widgets
+#        if self.state == 1:
+#            for i in reversed(range(self.layout8.count())):
+#                self.layout8.itemAt(i).widget().setParent(None)
+#                self.layout8.takeAt(i)
+#                QtGui.QApplication.processEvents()
+#                self.update()
+#            for i in reversed(range(self.layout9.count())):
+#                self.layout9.itemAt(i).widget().setParent(None)
+#                self.layout9.takeAt(i)
+#                QtGui.QApplication.processEvents()
+#                self.update()
+#
+#            self.hourlabel1.hide()
+#            self.hourlabel2.hide()
+#            self.hourlabel3.hide()
+#            self.hourlabel4.hide()
+#            self.hourlabel5.hide()
+#            self.hourlabel6.hide()
+#            self.hourlabel7.hide()
+#            self.hourlabel8.hide()
+#            self.hourlabel9.hide()
+#            self.hourlabel10.hide()
+#            self.hourlabel11.hide()
+#            self.hourlabel12.hide()
+#            self.hourlabel13.hide()
+#            self.hourlabel14.hide()
+#            self.hourlabel15.hide()
+#            self.hourlabel16.hide()
+#            self.hourlabel17.hide()
+#            self.hourlabel18.hide()
+#            self.hourlabel19.hide()
+#            self.hourlabel20.hide()
+#            self.hourlabel21.hide()
+#            self.hourlabel22.hide()
+#
+#            self.hourlabel1LB.hide()
+#            self.hourlabel2LB.hide()
+#            self.hourlabel3LB.hide()
+#            self.hourlabel4LB.hide()
+#            self.hourlabel5LB.hide()
+#            self.hourlabel6LB.hide()
+#            self.hourlabel7LB.hide()
+#            self.hourlabel8LB.hide()
+#            self.hourlabel9LB.hide()
+#            self.hourlabel10LB.hide()
+#            self.hourlabel11LB.hide()
+#            self.hourlabel12LB.hide()
+#            self.hourlabel13LB.hide()
+#            self.hourlabel14LB.hide()
+#            self.hourlabel15LB.hide()
+#            self.hourlabel16LB.hide()
+#            self.hourlabel17LB.hide()
+#            self.hourlabel18LB.hide()
+#            self.hourlabel19LB.hide()
+#            self.hourlabel20LB.hide()
+#            self.hourlabel21LB.hide()
+#            self.hourlabel22LB.hide()
+
+#            self.imagelabel.hide()
+#            self.radarlabel.hide()
+#            QtGui.QApplication.processEvents()
+#            self.update()
+#            self.state -= 1
+#        elif self.state == 0:
+#            self.layout8.addWidget(self.hourlabel1)
+#            self.layout8.addWidget(self.hourlabel2)
+#            self.layout8.addWidget(self.hourlabel3)
+#            self.layout8.addWidget(self.hourlabel4)
+#            self.layout8.addWidget(self.hourlabel5)
+#            self.layout8.addWidget(self.hourlabel6)
+#            self.layout8.addWidget(self.hourlabel7)
+#            self.layout8.addWidget(self.hourlabel8)
+#            self.layout8.addWidget(self.hourlabel9)
+#            self.layout8.addWidget(self.hourlabel10)
+#            self.layout8.addWidget(self.hourlabel11)
+#            self.layout8.addWidget(self.hourlabel12)
+#            self.layout8.addWidget(self.hourlabel13)
+#            self.layout8.addWidget(self.hourlabel14)
+#            self.layout8.addWidget(self.hourlabel15)
+#            self.layout8.addWidget(self.hourlabel16)
+#            self.layout8.addWidget(self.hourlabel17)
+#            self.layout8.addWidget(self.hourlabel18)
+#            self.layout8.addWidget(self.hourlabel19)
+#            self.layout8.addWidget(self.hourlabel20)
+#            self.layout8.addWidget(self.hourlabel21)
+#            self.layout8.addWidget(self.hourlabel22)
+#            self.layout9.addWidget(self.hourlabel1LB)
+#            self.layout9.addWidget(self.hourlabel2LB)
+#            self.layout9.addWidget(self.hourlabel3LB)
+#            self.layout9.addWidget(self.hourlabel4LB)
+#            self.layout9.addWidget(self.hourlabel5LB)
+#            self.layout9.addWidget(self.hourlabel6LB)
+#            self.layout9.addWidget(self.hourlabel7LB)
+#            self.layout9.addWidget(self.hourlabel8LB)
+#            self.layout9.addWidget(self.hourlabel9LB)
+#            self.layout9.addWidget(self.hourlabel10LB)
+#            self.layout9.addWidget(self.hourlabel11LB)
+#            self.layout9.addWidget(self.hourlabel12LB)
+#            self.layout9.addWidget(self.hourlabel13LB)
+#            self.layout9.addWidget(self.hourlabel14LB)
+#            self.layout9.addWidget(self.hourlabel15LB)
+#            self.layout9.addWidget(self.hourlabel16LB)
+#            self.layout9.addWidget(self.hourlabel17LB)
+#            self.layout9.addWidget(self.hourlabel18LB)
+#            self.layout9.addWidget(self.hourlabel19LB)
+#            self.layout9.addWidget(self.hourlabel20LB)
+#            self.layout9.addWidget(self.hourlabel21LB)
+#            self.layout9.addWidget(self.hourlabel22LB)
+#
+#            self.imagelabel.show()
+#            self.radarlabel.show()
+#            self.state += 1
+#            QtGui.QApplication.processEvents()
+#            self.update()
 
     def addRadar(self, fname):
+        fname = os.path.expanduser('~/Projects/weather/' + fname)
         self.movie = QtGui.QMovie(fname, QtCore.QByteArray(), self)
         self.movie.setScaledSize(QtCore.QSize(400, 300))
         self.movie.setCacheMode(QtGui.QMovie.CacheAll)
@@ -276,14 +407,45 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         self.radarlabel.setAlignment(QtCore.Qt.AlignCenter)
         self.movie.start()
 
+#     THIS IS JUST A START!! VERY CRUDE!!
+
+    def get_image(self, weather):
+        if 'cloud' in weather['Icon'].lower():
+            if int(weather['HighTemp']) < 50:
+                self.image = self.addImage('pcloudfrozen')
+            if int(weather['HighTemp']) >= 50 and int(weather['HighTemp']) < 60:
+                self.image = self.addImage('pcloudchilly')
+            if int(weather['HighTemp']) >= 60 and int(weather['HighTemp']) < 70:
+                self.image = self.addImage('pcloudjacket')
+            if int(weather['HighTemp']) >= 70 and int(weather['HighTemp']) < 80:
+                self.image = self.addImage('pcloudsun')
+            if int(weather['HighTemp']) >= 80 and int(weather['HighTemp']) < 90:
+                self.image = self.addImage('pcloudbikini')
+            if int(weather['HighTemp']) >= 90:
+                self.image = self.addImage('pcloudbone')
+        if 'rain' in weather['Icon'].lower():
+            weather['HighTemp'] = "93"
+            if int(weather['HighTemp']) < 50:
+                self.image = self.addImage('stormfrozen')
+            if int(weather['HighTemp']) > 50 and int(weather['HighTemp']) < 60:
+                self.image = self.addImage('stormchilly')
+            if int(weather['HighTemp']) > 60 and int(weather['HighTemp']) < 70:
+                self.image = self.addImage('stormjacket')
+            if int(weather['HighTemp']) > 70 and int(weather['HighTemp']) < 80:
+                self.image = self.addImage('stormsun')
+            if int(weather['HighTemp']) > 80 and int(weather['HighTemp']) < 90:
+                self.image = self.addImage('stormbikini')
+            if int(weather['HighTemp']) > 90:
+                self.image = self.addImage('stormbone')
+
     def addImage(self, image):
-        self.image = 'WeatherIcons' + os.sep + image
+        self.image = os.path.expanduser('~/Projects/weather/WeatherIcons' + os.sep + image)
         self.pixmap = QtGui.QPixmap(self.image).scaled(400, 175, QtCore.Qt.KeepAspectRatio)
         self.imagelabel.setPixmap(self.pixmap)
         self.imagelabel.setAlignment(QtCore.Qt.AlignCenter)
         self.layoutImages.addWidget(self.imagelabel)
 
-    def onTimer(self):
+    def addWeather(self):
         QtGui.QApplication.processEvents()
         blue1 = Color('#6a9dcf')
         blue2 = Color('#1D2951')
@@ -308,7 +470,6 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
             self.space2 = '\t\t\t'
             self.space3 = '\t\t\t'
 
-            # check if hour ==  23 if so populate a dividerdatelabel(has to be made first) to separate today from tommorow
             if self.current_weather['location'] == 'Lucedale':
                 self.timelabel.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
                 self.timelabel.setText(time.strftime("%I:%M %p"))
@@ -327,18 +488,7 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
                 self.chanceofrain.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
                 self.chanceofrain.setText(self.current_weather['ChanceofRain'] + ' Chance of Rain')
                 self.hightemp.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
-                if self.hightemp > 80 and self.hightemp < 90:
-                    self.image = self.addImage('bikinifrog')
-                elif self.hightemp > 90:
-                    self.image = self.addImage('bonefrog')
-                elif self.hightemp < 80 and self.hightemp > 70:
-                    self.image = self.addImage('sunfrog')
-                elif self.hightemp < 70 and self.hightemp > 60:
-                    self.image = self.addImage('jacketfrog')
-                elif self.hightemp < 60 and self.hightemp > 50:
-                    self.image = self.addImage('chillyfrog')
-                elif self.hightemp < 50:
-                    self.image = self.addImage('frozenfrog')
+                self.get_image(self.current_weather)
                 self.hightemp.setText("Today's High: " + self.current_weather['HighTemp'] + u"\u00B0" + ' F')
                 self.lowtemp.setStyleSheet("font-weight:bold; font-family:Purisa; color:lightsteelblue")
                 self.lowtemp.setText("Today's Low: " + self.current_weather['LowTemp'] + u"\u00B0" + ' F')
@@ -612,6 +762,7 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
         now_dict['ChanceofRain'] = str(int(current["precipProbability"] * 100)) + "%"
         now_dict['HighTemp'] = str((daily["temperatureMax"])).split('.')[0]
         now_dict['LowTemp'] = str((daily["temperatureMin"])).split('.')[0]
+        now_dict['Icon'] = daily['icon']
         weather_list.append(now_dict)
         hourly = parsed["hourly"]["data"]
 
@@ -630,6 +781,7 @@ class Weather(QtGui.QGraphicsView, QtCore.QObject):
             hour_dict['rainchance'] = int((x['precipProbability'] * 100))
             hour_dict['windspeed'] = x['windSpeed']
             hour_dict['windchill'] = windchill
+            hour_dict['Icon'] = x['icon']
             weather_list.append(hour_dict)
         return weather_list
 
